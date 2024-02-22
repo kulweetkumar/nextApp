@@ -8,10 +8,7 @@ export default function Home() {
     email: "",
     message: "",
   });
-  const dispatch = useDispatch();
-  const useDispatch=()=>{
-    dispatch(createContact(formData))
-  }
+    
   const [errors, setErrors] = useState({});
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -20,7 +17,11 @@ export default function Home() {
       [name]: value,
     }));
   };
-
+  
+  const reduxDispatch = useDispatch(); 
+  const contactDispatch =()=>{
+    reduxDispatch(createContact(formData))
+  }
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -39,6 +40,7 @@ export default function Home() {
     }
     setErrors(newErrors);
     if (Object.keys(newErrors).length === 0) {
+      // Dispatch action using reduxDispatch
       setFormData({
         name: "",
         email: "",
@@ -61,7 +63,7 @@ export default function Home() {
       </header>
 
       <div className="p-6">
-        <form onSubmit={handleSubmit}>
+        <form >
           <div className="mb-4">
             <label htmlFor="name" className="block text-gray-700">
               Your Name<span className="text-red-500">*</span>
@@ -113,7 +115,7 @@ export default function Home() {
           </div>
 
           <button
-            type="submit"
+            type="submit" onClick={contactDispatch} 
             className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300">
             Send Message
           </button>

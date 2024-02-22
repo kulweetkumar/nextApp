@@ -3,13 +3,13 @@ import { createSlice } from '@reduxjs/toolkit'
 const initialState = {
   value: 0,
 }
-
 export const counterSlice = createSlice({
   name: 'contactUsSlice',
   initialState,
   reducers: {
-   createContact:(state,action)=>{
-    state.contactUs.push(state);
+    createContact:(state,action)=>{
+    console.log(state,'==============================================');return
+    // state.contactUs.push(state);
    },
     decrement: (state) => {
       state.value -= 1
@@ -19,7 +19,10 @@ export const counterSlice = createSlice({
     },
   },
 })
-
-export const { increment, decrement, incrementByAmount } = counterSlice.actions
+export const {
+  increment,
+  decrement,
+  incrementByAmount
+ } = counterSlice.actions
 
 export default counterSlice.reducer
