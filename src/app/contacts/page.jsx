@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 
 export default function Home() {
   const [formData, setFormData] = useState({
@@ -7,6 +8,10 @@ export default function Home() {
     email: "",
     message: "",
   });
+  const dispatch = useDispatch();
+  const useDispatch=()=>{
+    dispatch(createContact(formData))
+  }
   const [errors, setErrors] = useState({});
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -33,10 +38,7 @@ export default function Home() {
       newErrors.email = "Invalid email format";
     }
     setErrors(newErrors);
-
-    // If there are no errors, submit the form
     if (Object.keys(newErrors).length === 0) {
-      console.log(formData);
       setFormData({
         name: "",
         email: "",

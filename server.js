@@ -35,6 +35,7 @@ server.use("/api",apiRoute); // apis route  file const withSass = require('@zeit
 const port = process.env.PORT || 3000;
 server.listen(port, () => {
   console.log(`Server started successfully on http://localhost:${port}`);
-}); server.get("*", (req, res) => {
+}); 
+server.get("*", (req, res) => {
   return handle(req, res);
 });
