@@ -20,12 +20,12 @@ server.enable("trust proxy");
 server.set("view engine", "ejs");
 server.set("views", path.join(__dirname, "views"));
 server.use(cors());
+server.use(bodyParser.json())
 server.use(fileUpload());
 server.options("*", cors());
 server.use("/public", express.static(path.join(__dirname, "public")));
 server.use(express.static(path.join(__dirname, "public")));
 server.use(cookieParser());
-server.use(bodyParser.text({ type: "text/html" }));
 server.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
   next();

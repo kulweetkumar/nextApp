@@ -1,15 +1,19 @@
 'use client';
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+import { createContactApi } from "../apiServices/api";
+import { ToastContainer, toast } from 'react-toastify';
 
 export default function Home() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     message: "",
+    phone: "",
   });
-    
+
   const [errors, setErrors] = useState({});
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -17,15 +21,11 @@ export default function Home() {
       [name]: value,
     }));
   };
-  
-  const reduxDispatch = useDispatch(); 
-  const contactDispatch =()=>{
-    reduxDispatch(createContact(formData))
-  }
-  const handleSubmit = (e) => {
-    e.preventDefault();
 
-    // Basic validation
+  const reduxDispatch = useDispatch();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     const newErrors = {};
     if (!formData.name.trim()) {
       newErrors.name = "Name is required";
@@ -39,22 +39,33 @@ export default function Home() {
       newErrors.email = "Invalid email format";
     }
     setErrors(newErrors);
-    if (Object.keys(newErrors).length === 0) {
-      // Dispatch action using reduxDispatch
-      setFormData({
-        name: "",
-        email: "",
-        message: "",
-      });
-    }
-  };
 
+    if (Object.keys(newErrors).length === 0) {
+      try {
+        const response = await createContactApi(formData);
+        setFormData({
+          name: "",
+          email: "",
+          message: "",
+          phone: "",
+        });
+        toast.success(response.data.message); 
+      } catch (error) {
+        // If there's an error
+        if (error.response) {
+          toast.error(error.response.data.message); 
+        } else {
+          toast.error('Failed to create contact. Please try again later.'); 
+        }
+      }
+    }
+    
+  };
   const isValidEmail = (email) => {
-    // Very basic email format validation
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
 
-  useEffect(() => { }, []);
+  useEffect(() => {}, []); 
 
   return (
     <main className="flex flex-col items-center justify-center min-h-screen p-4 lg:p-24 bg-gray-100">
@@ -63,7 +74,7 @@ export default function Home() {
       </header>
 
       <div className="p-6">
-        <form >
+        <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label htmlFor="name" className="block text-gray-700">
               Your Name<span className="text-red-500">*</span>
@@ -97,7 +108,22 @@ export default function Home() {
               <p className="text-red-500 text-xs mt-1">{errors.email}</p>
             )}
           </div>
-
+          <div className="mb-4">
+            <label htmlFor="email" className="block text-gray-700">
+              Phone<span className="text-red-500">*</span>
+            </label>
+            <input
+              type="phone"
+              id="phone"
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+              className="w-full border rounded-md px-4 py-2 mt-1 focus:outline-none focus:border-blue-500"
+            />
+            {errors.phone && (
+              <p className="text-red-500 text-xs mt-1">{errors.phone}</p>
+            )}
+          </div>
           <div className="mb-4">
             <label htmlFor="message" className="block text-gray-700">
               Your Message
@@ -115,12 +141,13 @@ export default function Home() {
           </div>
 
           <button
-            type="submit" onClick={contactDispatch} 
+            type="submit"
             className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300">
             Send Message
           </button>
         </form>
       </div>
+      <ToastContainer /> {/* Add ToastContainer to render toast notifications */}
     </main>
   );
 }
