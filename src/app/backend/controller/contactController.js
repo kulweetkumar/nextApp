@@ -25,6 +25,7 @@ const ContactUs = async (req, res) => {
   const getcontactData = async (req, res) => {
     try {
       const ContactSupport = await contact_us.find();
+      console.log(ContactSupport);
       return helper.success(res,"Get data successfully",ContactSupport);
     } catch (err) {
       return helper.error400(res, err.message);

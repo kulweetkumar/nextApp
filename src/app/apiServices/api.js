@@ -23,7 +23,7 @@ export const createContactApi = async (formData) => {
 export const getContactData = async (formData) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const response = await axios.post(`${apiPath}/get_contact_data`);
+            const response = await axios.get(`${apiPath}/get_contact_data`);
             resolve(response.data);
         } catch (error) {
             if (error.response) {
